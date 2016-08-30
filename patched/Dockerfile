@@ -4,10 +4,10 @@ MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
 ENV R_VERSION 3.3.1
 
-RUN apk --no-cache add gcc gfortran g++ make automake autoconf \
+RUN apk --no-cache add gcc gfortran g++ make \
     readline-dev icu-dev libjpeg-turbo-dev libpng-dev tiff-dev \
     zlib-dev bzip2-dev pcre-dev xz-dev curl-dev \
-    file zip perl wget ca-certificates \
+    file coreutils zip perl wget ca-certificates \
     && cd /tmp \
     && wget https://stat.ethz.ch/R/daily/R-patched.tar.gz \
     && tar -xf R-patched.tar.gz \
