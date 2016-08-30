@@ -35,9 +35,6 @@ RUN apk --no-cache add gcc gfortran g++ make readline-dev ncurses icu-dev \
     && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron \
     && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"))' >> /usr/lib/R/etc/Rprofile.site \
     && ln -s /usr/lib/R/etc/* /etc/R/ \
-    && Rscript -e 'install.packages(c("littler", "docopt", "devtools"))' \
-    && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
-    && ln -s /usr/local/lib/R/site-library/littler/examples/* /usr/local/bin/ \
     && rm -rf /usr/lib/R/library/translations \
     && rm -rf /tmp/*
 
