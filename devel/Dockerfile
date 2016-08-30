@@ -25,19 +25,20 @@ RUN apk --no-cache add gcc gfortran g++ make automake autoconf \
                 --without-x \
                 --without-recommended-packages \
                 --enable-R-shlib \
-                F77=gfortran
     && make \
     && make install \
     && cd src/nmath/standalone \
     && make \
     && make install \
-    && mkdir -p /etc/R
-    && mkdir -p /usr/local/lib/R/site-library \                                        
-    && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /etc/R/Renviron \
+    && cd /tmp \
+    && mkdir -p /etc/R \
+    && mkdir -p /usr/local/lib/R/site-library \
+    && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron \
     && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"))' >> /usr/lib/R/etc/Rprofile.site \
     && ln -s /usr/lib/R/etc/* /etc/R/ \
     && Rscript -e 'install.packages(c("littler", "docopt", "devtools"))' \
-    && ln -s /usr/lib/R/library/littler/examples/* /usr/local/bin/ \
+    && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
+    && ln -s /usr/local/lib/R/site-library/littler/examples/* /usr/local/bin/ \
     && rm -rf /usr/lib/R/library/translations \
     && rm -rf /tmp/*
 
