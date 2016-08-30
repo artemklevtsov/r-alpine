@@ -10,7 +10,7 @@ release:
   stage: build
   script:
     - docker build --pull -t artemklevtsov/r-alpine:release -t artemklevtsov/r-alpine:latest release
-    - docker run -ti artemklevtsov/r-alpine:release R --version
+    - docker run artemklevtsov/r-alpine:release R --version
     - docker push artemklevtsov/r-alpine:release
     - docker push artemklevtsov/r-alpine:latest
 
@@ -18,5 +18,12 @@ devel:
   stage: build
   script:
     - docker build --pull -t artemklevtsov/r-alpine:devel devel
-    - docker run -ti artemklevtsov/r-alpine:devel R --version
+    - docker run artemklevtsov/r-alpine:devel R --version
     - docker push artemklevtsov/r-alpine:devel
+
+patched:
+  stage: build
+  script:
+    - docker build --pull -t artemklevtsov/r-alpine:patched patched
+    - docker run artemklevtsov/r-alpine:patched R --version
+    - docker push artemklevtsov/r-alpine:patched
