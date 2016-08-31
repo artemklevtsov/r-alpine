@@ -28,15 +28,17 @@ RUN apk --no-cache add gcc gfortran g++ make ncurses readline-dev \
     && make \
     && make install \
     && cd src/nmath/standalone \
-    && make \
+    && make shared \
     && make install \
-    && cd /tmp \
-    && apk del build-deps \
-    && mkdir -p /etc/R \
-    && mkdir -p /usr/local/lib/R/site-library \
+    && apk del --purge --rdepends build-deps \
+    && rm -f /usr/lib/R/bin/R \
+    && ln -s //usr/bin/R /usr/lib/R/bin/R \
     && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron \
     && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"))' >> /usr/lib/R/etc/Rprofile.site \
+    && mkdir -p /etc/R \
     && ln -s /usr/lib/R/etc/* /etc/R/ \
+    && mkdir -p /usr/local/lib/R/site-library \
+    && chgrp -R staff /usr/local \
     && rm -rf /usr/lib/R/library/translations \
     && rm -rf /tmp/*
 
