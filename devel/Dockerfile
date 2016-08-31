@@ -38,7 +38,6 @@ RUN apk --no-cache add gcc gfortran g++ make ncurses readline-dev \
     && mkdir -p /etc/R \
     && ln -s /usr/lib/R/etc/* /etc/R/ \
     && mkdir -p /usr/local/lib/R/site-library \
-    && chgrp -R staff /usr/local \
     && rm -rf /usr/lib/R/library/translations \
     && rm -rf /tmp/*
 
