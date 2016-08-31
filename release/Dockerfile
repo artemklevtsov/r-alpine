@@ -4,13 +4,16 @@ MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
 ENV R_VERSION 3.3.1
 
-RUN apk --no-cache add gcc gfortran g++ make readline-dev ncurses icu-dev \
-    libjpeg-turbo-dev libpng-dev tiff-dev bzip2-dev pcre-dev xz-dev curl-dev \
-    file coreutils zip perl wget \
+RUN apk --no-cache add gcc gfortran g++ make ncurses readline-dev \
+    icu-dev bzip2-dev xz-dev pcre-dev libjpeg-turbo-dev libpng-dev tiff-dev \
+    curl-dev file coreutils zip \
+    && apk --no-cache add --virtual build-deps \
+    wget rsync perl autoconf automake openjdk8-jre-base cairo-dev pango-dev \
     && cd /tmp \
     && wget https://cran.r-project.org/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz \
     && tar -xf R-${R_VERSION}.tar.gz \
     && cd R-${R_VERSION} \
+    && tools/rsync-recommended \
     && CXXFLAGS="$CXXFLAGS -D__MUSL__" ./configure \
                 --prefix=/usr \
                 --sysconfdir=/etc/R \
@@ -20,9 +23,7 @@ RUN apk --no-cache add gcc gfortran g++ make readline-dev ncurses icu-dev \
                 rincludedir=/usr/include/R \
                 rsharedir=/usr/share/R \
                 --disable-nls \
-                --disable-java \
                 --without-x \
-                --without-recommended-packages \
                 --enable-R-shlib \
     && make \
     && make install \
@@ -30,6 +31,7 @@ RUN apk --no-cache add gcc gfortran g++ make readline-dev ncurses icu-dev \
     && make \
     && make install \
     && cd /tmp \
+    && apk del build-deps \
     && mkdir -p /etc/R \
     && mkdir -p /usr/local/lib/R/site-library \
     && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron \
