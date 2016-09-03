@@ -33,7 +33,7 @@ RUN apk --no-cache add gcc gfortran g++ make ncurses readline-dev \
     && apk del --purge --rdepends build-deps \
     && rm -f /usr/lib/R/bin/R \
     && ln -s //usr/bin/R /usr/lib/R/bin/R \
-    && echo "R_LIBS=\${R_LIBS-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron \
+    && echo "R_LIBS_SITE=\${R_LIBS_SITE-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron \
     && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"))' >> /usr/lib/R/etc/Rprofile.site \
     && mkdir -p /etc/R \
     && ln -s /usr/lib/R/etc/* /etc/R/ \
