@@ -8,11 +8,16 @@ before_script:
 
 release:
   stage: build
+  variables:
+    VERSION: 3.3.1
   script:
-    - docker build --pull -t artemklevtsov/r-alpine:release -t artemklevtsov/r-alpine:latest release
+    - docker build --pull -t artemklevtsov/r-alpine:release release
+    - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:latest
+    - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:${VERSION}
     - docker run artemklevtsov/r-alpine:release R --version
     - docker push artemklevtsov/r-alpine:release
     - docker push artemklevtsov/r-alpine:latest
+    - docker push artemklevtsov/r-alpine:${VERSION}
 
 devel:
   stage: build
