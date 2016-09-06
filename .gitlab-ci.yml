@@ -4,20 +4,20 @@ services:
   - docker:dind
 
 before_script:
-  - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+  - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}" docker.io
 
 release:
   stage: build
   variables:
-    VERSION: 3.3.1
+    R_VERSION: 3.3.1
   script:
-    - docker build --pull -t artemklevtsov/r-alpine:release release
+    - docker build --pull -t artemklevtsov/r-alpine:release --build-arg R_VERSION=${R_VERSION} release
+    - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:${R_VERSION}
     - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:latest
-    - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:${VERSION}
     - docker run artemklevtsov/r-alpine:release R --version
     - docker push artemklevtsov/r-alpine:release
+    - docker push artemklevtsov/r-alpine:${R_VERSION}
     - docker push artemklevtsov/r-alpine:latest
-    - docker push artemklevtsov/r-alpine:${VERSION}
 
 devel:
   stage: build
