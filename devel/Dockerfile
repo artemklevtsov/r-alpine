@@ -22,7 +22,7 @@ RUN apk --no-cache add build-base gfortran readline-dev \
                 rsharedir=/usr/share/R \
                 --disable-nls \
                 --without-x \
-                --without-recomended-packages \
+                --without-recommended-packages \
                 --enable-R-shlib \
     && make \
     && make install \
