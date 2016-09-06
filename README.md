@@ -15,7 +15,7 @@ R is a GNU project. The source code for the R software environment is written pr
 ## Image Variants
 
 | Descripiton | Tag | Dockerfile | Image Size |
-|:------------- |:--------------:|:------:|
+|:----------- |:---:|:----------:|:----------:|
 | The latest release | `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/release/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:3.3.1.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:3.3.1) |
 | The latest patched release |  `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/patched/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:patched.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:patched)
 | The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/devel/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:devel.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:devel)
