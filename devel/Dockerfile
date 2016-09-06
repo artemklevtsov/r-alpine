@@ -37,6 +37,7 @@ RUN apk --no-cache add build-base gfortran readline-dev \
     && mkdir -p /etc/R \
     && ln -s /usr/lib/R/etc/* /etc/R/ \
     && mkdir -p /usr/local/lib/R/site-library \
+    && chgrp users /usr/local/lib/R/site-library \
     && rm -rf /usr/lib/R/library/translations \
     && rm -rf /tmp/*
 
