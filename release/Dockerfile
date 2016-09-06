@@ -2,15 +2,17 @@ FROM alpine:latest
 
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
-ENV R_VERSION 3.3.1
+ARG R_VERSION
 
-RUN apk --no-cache add gcc gfortran g++ make ncurses readline-dev \
+ENV R_VERSION ${R_VERSION:-3.3.1}
+
+RUN apk --no-cache add build-base gfortran readline-dev \
     icu-dev bzip2-dev xz-dev pcre-dev libjpeg-turbo-dev libpng-dev tiff-dev \
-    curl-dev file coreutils zip \
+    curl-dev file coreutils bash \
     && apk --no-cache add --virtual build-deps \
     wget rsync perl autoconf automake openjdk8-jre-base cairo-dev pango-dev \
     && cd /tmp \
-    && wget https://cran.r-project.org/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz \
+    && wget https://cran.r-project.org/src/base/R-${R_VERSION:0:1}/R-${R_VERSION}.tar.gz \
     && tar -xf R-${R_VERSION}.tar.gz \
     && cd R-${R_VERSION} \
     && tools/rsync-recommended \
@@ -24,6 +26,7 @@ RUN apk --no-cache add gcc gfortran g++ make ncurses readline-dev \
                 rsharedir=/usr/share/R \
                 --disable-nls \
                 --without-x \
+                --without-recomended-packages \
                 --enable-R-shlib \
     && make \
     && make install \
