@@ -14,7 +14,7 @@ R is a GNU project. The source code for the R software environment is written pr
 
 ## Image Variants
 
-| Desripiton | Tag          | Dockerfile | Image Size |
+| Descripiton | Tag | Dockerfile | Image Size |
 |:------------- |:--------------:|:------:|
 | The latest release | `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/release/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:3.3.1.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:3.3.1) |
 | The latest patched release |  `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/patched/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:patched.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:patched)
@@ -33,13 +33,13 @@ $ docker run -ti --rm artemklevtsov/r-alpine:latest
 ### Batch mode
 
 ```bash
-$ docker run -ti --rm -v "$PWD":/home/docker -w /home/docker -u docker artemklevtsov/r-alpine:latest R CMD check .
+$ docker run -ti --rm -v "$PWD":/tmp/rpkgs -w /tmp/rpkgs -u guest artemklevtsov/r-alpine:latest R CMD check .
 ```
 
 Alternatively, just run a bash session on the container first. This allows a user to run batch commands and also edit and run scripts:
 
 ```bash
-$ docker run -ti --rm r-base /bin/ash
+$ docker run -ti --rm artemklevtsov/r-alpine:latest /bin/ash
 $ vi myscript.R
 ```
 
