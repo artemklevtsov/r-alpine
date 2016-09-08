@@ -1,3 +1,6 @@
+variables:
+  CONTAINER_IMAGE_NAME: ${CI_REGISTRY}/${I_PROJECT_NAMESPACE}/{CI_PROJECT_NAME}
+
 image: docker:latest
 
 services:
@@ -11,24 +14,24 @@ release:
   variables:
     R_VERSION: 3.3.1
   script:
-  - docker build --pull -t ${CI_REGISTRY}/artemklevtsov/r-alpine:release --build-arg R_VERSION=${R_VERSION} release
-  - docker tag ${CI_REGISTRY}/artemklevtsov/r-alpine:release ${CI_REGISTRY}/artemklevtsov/r-alpine:${R_VERSION}
-  - docker tag ${CI_REGISTRY}/artemklevtsov/r-alpine:release ${CI_REGISTRY}/artemklevtsov/r-alpine:latest
-  - docker run ${CI_REGISTRY}/artemklevtsov/r-alpine:release R --version
-  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:release
-  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:${R_VERSION}
-  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:latest
+  - docker build --pull -t ${CONTAINER_IMAGE_NAME}:release --build-arg R_VERSION=${R_VERSION} release
+  - docker tag ${CONTAINER_IMAGE_NAME}:release ${CONTAINER_IMAGE_NAME}:${R_VERSION}
+  - docker tag ${CONTAINER_IMAGE_NAME}:release ${CONTAINER_IMAGE_NAME}:latest
+  - docker run ${CONTAINER_IMAGE_NAME}:release R --version
+  - docker push ${CONTAINER_IMAGE_NAME}:release
+  - docker push ${CONTAINER_IMAGE_NAME}:${R_VERSION}
+  - docker push ${CONTAINER_IMAGE_NAME}:latest
 
 devel:
   stage: build
   script:
-  - docker build --pull -t ${CI_REGISTRY}/artemklevtsov/r-alpine:devel devel
-  - docker run ${CI_REGISTRY}/artemklevtsov/r-alpine:devel R --version
-  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:devel
+  - docker build --pull -t ${CONTAINER_IMAGE_NAME}:devel devel
+  - docker run ${CONTAINER_IMAGE_NAME}:devel R --version
+  - docker push ${CONTAINER_IMAGE_NAME}:devel
 
 patched:
   stage: build
   script:
-  - docker build --pull -t ${CI_REGISTRY}/artemklevtsov/r-alpine:patched patched
-  - docker run ${CI_REGISTRY}/artemklevtsov/r-alpine:patched R --version
-  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:patched
+  - docker build --pull -t ${CONTAINER_IMAGE_NAME}:patched patched
+  - docker run ${CONTAINER_IMAGE_NAME}:patched R --version
+  - docker push ${CONTAINER_IMAGE_NAME}:patched
