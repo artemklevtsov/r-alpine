@@ -1,34 +1,34 @@
 image: docker:latest
 
 services:
-  - docker:dind
+- docker:dind
 
 before_script:
-  - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+- docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
 release:
   stage: build
   variables:
     R_VERSION: 3.3.1
   script:
-    - docker build --pull -t artemklevtsov/r-alpine:release --build-arg R_VERSION=${R_VERSION} release
-    - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:${R_VERSION}
-    - docker tag artemklevtsov/r-alpine:release artemklevtsov/r-alpine:latest
-    - docker run artemklevtsov/r-alpine:release R --version
-    - docker push artemklevtsov/r-alpine:release
-    - docker push artemklevtsov/r-alpine:${R_VERSION}
-    - docker push artemklevtsov/r-alpine:latest
+  - docker build --pull -t ${CI_REGISTRY}/artemklevtsov/r-alpine:release --build-arg R_VERSION=${R_VERSION} release
+  - docker tag ${CI_REGISTRY}/artemklevtsov/r-alpine:release ${CI_REGISTRY}/artemklevtsov/r-alpine:${R_VERSION}
+  - docker tag ${CI_REGISTRY}/artemklevtsov/r-alpine:release ${CI_REGISTRY}/artemklevtsov/r-alpine:latest
+  - docker run ${CI_REGISTRY}/artemklevtsov/r-alpine:release R --version
+  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:release
+  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:${R_VERSION}
+  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:latest
 
 devel:
   stage: build
   script:
-    - docker build --pull -t artemklevtsov/r-alpine:devel devel
-    - docker run artemklevtsov/r-alpine:devel R --version
-    - docker push artemklevtsov/r-alpine:devel
+  - docker build --pull -t ${CI_REGISTRY}/artemklevtsov/r-alpine:devel devel
+  - docker run ${CI_REGISTRY}/artemklevtsov/r-alpine:devel R --version
+  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:devel
 
 patched:
   stage: build
   script:
-    - docker build --pull -t artemklevtsov/r-alpine:patched patched
-    - docker run artemklevtsov/r-alpine:patched R --version
-    - docker push artemklevtsov/r-alpine:patched
+  - docker build --pull -t ${CI_REGISTRY}/artemklevtsov/r-alpine:patched patched
+  - docker run ${CI_REGISTRY}/artemklevtsov/r-alpine:patched R --version
+  - docker push ${CI_REGISTRY}/artemklevtsov/r-alpine:patched
