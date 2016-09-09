@@ -32,3 +32,10 @@ patched:
   - docker build --pull -t ${CI_REGISTRY_IMAGE}:patched patched
   - docker run ${CI_REGISTRY_IMAGE}:patched R --version
   - docker push ${CI_REGISTRY_IMAGE}:patched
+
+trigger:benchr:
+  type: deploy
+  images: alpine:latest
+  script:
+  - apk --no-cache add curl
+  - "curl -X POST -F token=${BENCHR_TOKEN} -F ref=docker https://gitlab.com/api/v3/projects/1284608/trigger/builds"
