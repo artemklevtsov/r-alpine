@@ -35,7 +35,8 @@ patched:
 
 trigger:benchr:
   type: deploy
-  images: alpine:latest
-  script:
+  image: alpine:latest
+  before_script:
   - apk --no-cache add curl
+  script:
   - "curl -X POST -F token=${BENCHR_TOKEN} -F ref=docker https://gitlab.com/api/v3/projects/1284608/trigger/builds"
