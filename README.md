@@ -55,6 +55,8 @@ Use `r-alpine` as a base for your own Dockerfiles. For instance, something along
 
 ```bash
 FROM artemklevtsov/r-alpine:latest
+RUN apk --no-cache add sqlite-dev
+RUN Rscript -e 'install.packages("RSQLite")'
 COPY . /usr/local/src/myscripts
 WORKDIR /usr/local/src/myscripts
 CMD ["Rscript", "myscript.R"]
