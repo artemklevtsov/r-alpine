@@ -1,42 +1,61 @@
 image: docker:latest
 
 services:
-- docker:dind
+  - docker:dind
+
+stages:
+  - build-base
+  - build-others
+  - deploy
 
 before_script:
-- docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+  - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
-release:
-  stage: build
+r-base:release:
+  stage: build-base
   variables:
     R_VERSION: 3.3.1
   script:
-  - docker build --pull -t ${CI_REGISTRY_IMAGE}:release --build-arg R_VERSION=${R_VERSION} release
-  - docker tag ${CI_REGISTRY_IMAGE}:release ${CI_REGISTRY_IMAGE}:${R_VERSION}
-  - docker tag ${CI_REGISTRY_IMAGE}:release ${CI_REGISTRY_IMAGE}:latest
-  - docker run ${CI_REGISTRY_IMAGE}:release R --version
-  - docker push ${CI_REGISTRY_IMAGE}:release
-  - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION}
-  - docker push ${CI_REGISTRY_IMAGE}:latest
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-base:release --build-arg R_VERSION=${R_VERSION} r-base/release
+    - docker tag ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE}/r-base:release ${CI_REGISTRY_IMAGE}:latest
+    - docker run ${CI_REGISTRY_IMAGE}/r-base:release R --version
+    - docker push ${CI_REGISTRY_IMAGE}/r-base:release
+    - docker push ${CI_REGISTRY_IMAGE}/r-base:${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}/r-base
 
-devel:
-  stage: build
+r-base:devel:
+  stage: build-base
   script:
-  - docker build --pull -t ${CI_REGISTRY_IMAGE}:devel devel
-  - docker run ${CI_REGISTRY_IMAGE}:devel R --version
-  - docker push ${CI_REGISTRY_IMAGE}:devel
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-base:devel r-base/devel
+    - docker run ${CI_REGISTRY_IMAGE}/r-base:devel R --version
+    - docker push ${CI_REGISTRY_IMAGE}/r-base:devel
 
-patched:
-  stage: build
+r-base:patched:
+  stage: build-base
   script:
-  - docker build --pull -t ${CI_REGISTRY_IMAGE}:patched patched
-  - docker run ${CI_REGISTRY_IMAGE}:patched R --version
-  - docker push ${CI_REGISTRY_IMAGE}:patched
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-base:patched r-base/patched
+    - docker run ${CI_REGISTRY_IMAGE}/r-base:patched R --version
+    - docker push ${CI_REGISTRY_IMAGE}/r-base:patched
 
-trigger:benchr:
+r-pkg-dev:
+  stage: build-others
+  script:
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-pkg-dev r-pkg-dev
+    - Rscript -e 'packageVersion("devtools")'
+    - docker push ${CI_REGISTRY_IMAGE}/r-pkg-dev
+
+tidyverse:
+  stage: build-others
+  script:
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}/tidyverse tidyverse
+    - Rscript -e 'packageVersion("tidyverse")'
+    - docker push ${CI_REGISTRY_IMAGE}/tidyverse
+
+triggers:
   type: deploy
   image: alpine:latest
   before_script:
-  - apk --no-cache add curl
+    - apk --no-cache add curl
   script:
-  - "curl -X POST -F token=${BENCHR_TOKEN} -F ref=docker https://gitlab.com/api/v3/projects/1284608/trigger/builds"
+    - "curl -X POST -F token=${BENCHR_TOKEN} -F ref=docker https://gitlab.com/api/v3/projects/1284608/trigger/builds"

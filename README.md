@@ -14,11 +14,13 @@ R is a GNU project. The source code for the R software environment is written pr
 
 ## Image Variants
 
-| Descripiton | Tag | Dockerfile | Image Size |
-|:----------- |:---:|:----------:|:----------:|
-| The latest release | `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/release/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:3.3.1.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:release "Get your own image badge on microbadger.com") |
-| The latest patched release |  `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/patched/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:patched.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:patched "Get your own image badge on microbadger.com")
-| The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/devel/Dockerfile) | [![](https://images.microbadger.com/badges/image/artemklevtsov/r-alpine:devel.svg)](http://microbadger.com/images/artemklevtsov/r-alpine:devel "Get your own image badge on microbadger.com")
+| Descripiton | Image | Tag | Dockerfile |
+|:----------- |:-----:|:---:|:----------:|
+| The latest release | `r-base` | `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/r-base/release/Dockerfile) |
+| The latest patched release | `r-base` | `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/r-base/patched/Dockerfile) |
+| The latest development release | `r-base` | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/r-base/devel/Dockerfile) |
+| R base image + `devtools`, `rozygen2`, `testthar`, `RUnit`, `covr`, `lintr` packages | `r-pkg-dev` | `latest` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/r-pkg-dev/Dockerfile) |
+| R base image + `tidyverse` + `RSQLite`, `RMySQL`, `RPostgreSQL` packages | `tidyverse` | `latest` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/tidyverse/Dockerfile) |
 
 ## How to use this image
 
