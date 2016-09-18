@@ -16,9 +16,9 @@ R is a GNU project. The source code for the R software environment is written pr
 
 | Descripiton | Tag | Dockerfile |
 |:----------- |:---:|:----------:|
-| The latest release | `base-3.3.1`, `base-release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/release/Dockerfile) |
-| The latest patched release | `base-patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/patched/Dockerfile) |
-| The latest development release | `base-devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/devel/Dockerfile) |
+| The latest release | `3`, `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/release/Dockerfile) |
+| The latest patched release | `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/patched/Dockerfile) |
+| The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/devel/Dockerfile) |
 | R base image + `devtools`, `rozygen2`, `testthar`, `RUnit`, `covr`, `lintr` packages | `pkg-dev` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/pkg-dev/Dockerfile) |
 | R base image + `tidyverse` + `RSQLite`, `RMySQL`, `RPostgreSQL` packages | `tidyverse` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/tidyverse/Dockerfile) |
 
