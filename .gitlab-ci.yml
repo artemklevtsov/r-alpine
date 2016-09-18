@@ -16,7 +16,7 @@ base:release:
   variables:
     R_VERSION: 3.3.1
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} r-base/release
+    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} base/release
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:base-${R_VERSION}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:base-release
     - docker run ${CI_REGISTRY_IMAGE} R --version
@@ -27,14 +27,14 @@ base:release:
 base:devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-devel r-base/devel
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-devel base/devel
     - docker run ${CI_REGISTRY_IMAGE}:base-devel R --version
     - docker push ${CI_REGISTRY_IMAGE}:base-devel
 
 base:patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-patched r-base/patched
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-patched base/patched
     - docker run ${CI_REGISTRY_IMAGE}:base-patched R --version
     - docker push ${CI_REGISTRY_IMAGE}:base-patched
 
