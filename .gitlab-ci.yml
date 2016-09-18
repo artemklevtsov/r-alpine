@@ -11,46 +11,46 @@ stages:
 before_script:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
-r-base:release:
+base:release:
   stage: build-base
   variables:
     R_VERSION: 3.3.1
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-base:release --build-arg R_VERSION=${R_VERSION} r-base/release
-    - docker tag ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE}/r-base:release ${CI_REGISTRY_IMAGE}:latest
-    - docker run ${CI_REGISTRY_IMAGE}/r-base:release R --version
-    - docker push ${CI_REGISTRY_IMAGE}/r-base:release
-    - docker push ${CI_REGISTRY_IMAGE}/r-base:${R_VERSION}
-    - docker push ${CI_REGISTRY_IMAGE}/r-base
+    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} r-base/release
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:base-${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:base-release
+    - docker run ${CI_REGISTRY_IMAGE} R --version
+    - docker push ${CI_REGISTRY_IMAGE}:base-release
+    - docker push ${CI_REGISTRY_IMAGE}:base-${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}
 
-r-base:devel:
+base:devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-base:devel r-base/devel
-    - docker run ${CI_REGISTRY_IMAGE}/r-base:devel R --version
-    - docker push ${CI_REGISTRY_IMAGE}/r-base:devel
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-devel r-base/devel
+    - docker run ${CI_REGISTRY_IMAGE}:base-devel R --version
+    - docker push ${CI_REGISTRY_IMAGE}:base-devel
 
-r-base:patched:
+base:patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-base:patched r-base/patched
-    - docker run ${CI_REGISTRY_IMAGE}/r-base:patched R --version
-    - docker push ${CI_REGISTRY_IMAGE}/r-base:patched
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-patched r-base/patched
+    - docker run ${CI_REGISTRY_IMAGE}:base-patched R --version
+    - docker push ${CI_REGISTRY_IMAGE}:base-patched
 
-r-pkg-dev:
+pkg-dev:
   stage: build-others
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}/r-pkg-dev r-pkg-dev
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:pkg-dev pkg-dev
     - Rscript -e 'packageVersion("devtools")'
-    - docker push ${CI_REGISTRY_IMAGE}/r-pkg-dev
+    - docker push ${CI_REGISTRY_IMAGE}:pkg-dev
 
 tidyverse:
   stage: build-others
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}/tidyverse tidyverse
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:tidyverse tidyverse
     - Rscript -e 'packageVersion("tidyverse")'
-    - docker push ${CI_REGISTRY_IMAGE}/tidyverse
+    - docker push ${CI_REGISTRY_IMAGE}:tidyverse
 
 triggers:
   type: deploy

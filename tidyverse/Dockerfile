@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/artemklevtsov/r-alpine/r-base:latest
+FROM registry.gitlab.com/artemklevtsov/r-alpine:latest
 
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
