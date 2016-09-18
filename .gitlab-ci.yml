@@ -17,39 +17,41 @@ base:release:
     R_VERSION: 3.3.1
   script:
     - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} base/release
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:base-${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:base-release
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:release
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
     - docker run ${CI_REGISTRY_IMAGE} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:base-release
-    - docker push ${CI_REGISTRY_IMAGE}:base-${R_VERSION}
     - docker push ${CI_REGISTRY_IMAGE}
+    - docker push ${CI_REGISTRY_IMAGE}:release
+    - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
 
 base:devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-devel base/devel
-    - docker run ${CI_REGISTRY_IMAGE}:base-devel R --version
-    - docker push ${CI_REGISTRY_IMAGE}:base-devel
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:devel base/devel
+    - docker run ${CI_REGISTRY_IMAGE}:devel R --version
+    - docker push ${CI_REGISTRY_IMAGE}:devel
 
 base:patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:base-patched base/patched
-    - docker run ${CI_REGISTRY_IMAGE}:base-patched R --version
-    - docker push ${CI_REGISTRY_IMAGE}:base-patched
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:patched base/patched
+    - docker run ${CI_REGISTRY_IMAGE}:patched R --version
+    - docker push ${CI_REGISTRY_IMAGE}:patched
 
 pkg-dev:
   stage: build-others
   script:
     - docker build --pull -t ${CI_REGISTRY_IMAGE}:pkg-dev pkg-dev
-    - Rscript -e 'packageVersion("devtools")'
+    - docker run ${CI_REGISTRY_IMAGE}:pkg-dev Rscript -e 'packageVersion("devtools")'
     - docker push ${CI_REGISTRY_IMAGE}:pkg-dev
 
 tidyverse:
   stage: build-others
   script:
     - docker build --pull -t ${CI_REGISTRY_IMAGE}:tidyverse tidyverse
-    - Rscript -e 'packageVersion("tidyverse")'
+    - docker run ${CI_REGISTRY_IMAGE}:tidyverse Rscript -e 'packageVersion("tidyverse")'
     - docker push ${CI_REGISTRY_IMAGE}:tidyverse
 
 triggers:
