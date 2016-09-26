@@ -67,7 +67,7 @@ clang-release:
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
 
-clang clang-devel:
+clang-devel:
   stage: build-base
   script:
     - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
