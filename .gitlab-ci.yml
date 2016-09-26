@@ -11,34 +11,75 @@ stages:
 before_script:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
-base:release:
+gcc:release:
   stage: build-base
   variables:
     R_VERSION: 3.3.1
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} base/release
+    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} gcc/release
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:release
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:gcc
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:gcc-release
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:gcc-${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:gcc-${R_VERSION:0:1}
     - docker run ${CI_REGISTRY_IMAGE} R --version
     - docker push ${CI_REGISTRY_IMAGE}
     - docker push ${CI_REGISTRY_IMAGE}:release
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
+    - docker push ${CI_REGISTRY_IMAGE}:gcc
+    - docker push ${CI_REGISTRY_IMAGE}:gcc-release
+    - docker push ${CI_REGISTRY_IMAGE}:gcc-${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}:gcc-${R_VERSION:0:1}
 
-base:devel:
+gcc:devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:devel base/devel
-    - docker run ${CI_REGISTRY_IMAGE}:devel R --version
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:gcc-devel gcc/devel
+    - docker tag ${CI_REGISTRY_IMAGE}:gcc-devel ${CI_REGISTRY_IMAGE}:devel
+    - docker run ${CI_REGISTRY_IMAGE}:gcc-devel R --version
+    - docker push ${CI_REGISTRY_IMAGE}:gcc-devel
     - docker push ${CI_REGISTRY_IMAGE}:devel
 
-base:patched:
+gcc:patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:patched base/patched
-    - docker run ${CI_REGISTRY_IMAGE}:patched R --version
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:gcc-patched gcc/patched
+    - docker tag ${CI_REGISTRY_IMAGE}:gcc-patched ${CI_REGISTRY_IMAGE}:patched
+    - docker run ${CI_REGISTRY_IMAGE}:gcc-patched R --version
+    - docker push ${CI_REGISTRY_IMAGE}:gcc-patched
     - docker push ${CI_REGISTRY_IMAGE}:patched
+
+clang:release:
+  stage: build-base
+  variables:
+    R_VERSION: 3.3.1
+  script:
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:clang --build-arg R_VERSION=${R_VERSION} clang/release
+    - docker tag ${CI_REGISTRY_IMAGE}:clang ${CI_REGISTRY_IMAGE}:clang-release
+    - docker tag ${CI_REGISTRY_IMAGE}:clang ${CI_REGISTRY_IMAGE}:clang-${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE}:clang ${CI_REGISTRY_IMAGE}:clang-${R_VERSION:0:1}
+    - docker run ${CI_REGISTRY_IMAGE}:clang R --version
+    - docker push ${CI_REGISTRY_IMAGE}:clang
+    - docker push ${CI_REGISTRY_IMAGE}:clang-release
+    - docker push ${CI_REGISTRY_IMAGE}:clang-${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}:clang-${R_VERSION:0:1}
+
+clang:devel:
+  stage: build-base
+  script:
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:clang-devel clang/devel
+    - docker run ${CI_REGISTRY_IMAGE}:clang-devel R --version
+    - docker push ${CI_REGISTRY_IMAGE}:clang-devel
+
+clang:patched:
+  stage: build-base
+  script:
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:clang-patched clang/patched
+    - docker run ${CI_REGISTRY_IMAGE}:clang-patched R --version
+    - docker push ${CI_REGISTRY_IMAGE}:clang-patched
 
 pkg-dev:
   stage: build-others
