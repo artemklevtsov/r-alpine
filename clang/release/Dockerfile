@@ -6,7 +6,7 @@ ARG R_VERSION
 
 ENV R_VERSION ${R_VERSION:-3.3.1}
 
-RUN apk --no-cache add musl-dev gfortran g++ clang-dev make \
+RUN apk --no-cache add musl-dev gfortran g++ clang clang-dev make \
        readline-dev icu-dev bzip2-dev xz-dev pcre-dev \
        libjpeg-turbo-dev libpng-dev tiff-dev  \
        curl-dev zip file coreutils bash \

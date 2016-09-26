@@ -2,7 +2,7 @@ FROM alpine:latest
 
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
-RUN apk --no-cache add musl-dev gfortran g++ clang-dev make \
+RUN apk --no-cache add musl-dev gfortran g++ clang clang-dev make \
        readline-dev icu-dev bzip2-dev xz-dev pcre-dev \
        libjpeg-turbo-dev libpng-dev tiff-dev  \
        curl-dev zip file coreutils bash \
