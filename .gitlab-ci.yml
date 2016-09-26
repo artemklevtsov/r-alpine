@@ -16,84 +16,84 @@ gcc-release:
   variables:
     R_VERSION: 3.3.1
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} ${BUILD_NAME%-*}/{BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:{BUILD_NAME#*-}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/{CI_BUILD_NAME#*-}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:{CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION:0:1}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
     - docker run ${CI_REGISTRY_IMAGE} R --version
     - docker push ${CI_REGISTRY_IMAGE}
-    - docker push ${CI_REGISTRY_IMAGE}:{BUILD_NAME#*-}
+    - docker push ${CI_REGISTRY_IMAGE}:{CI_BUILD_NAME#*-}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION:0:1}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
 
 gcc-devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${BUILD_NAME%-*}/{BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${CI_REGISTRY_IMAGE}:{BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME#*-}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/{CI_BUILD_NAME#*-}
+    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:{CI_BUILD_NAME#*-}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
 
 gcc-patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${BUILD_NAME%-*}/{BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${CI_REGISTRY_IMAGE}:{BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME#*-}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/{CI_BUILD_NAME#*-}
+    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:{CI_BUILD_NAME#*-}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
 
 clang-release:
   stage: build-base
   variables:
     R_VERSION: 3.3.1
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*} --build-arg R_VERSION=${R_VERSION} ${BUILD_NAME%-*}/{BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
-    - docker tag ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION:0:1}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}
-    - docker push ${CI_REGISTRY_IMAGE}:{BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION}
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME%-*}-${R_VERSION:0:1}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/{CI_BUILD_NAME#*-}
+    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
+    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
+    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} R --version
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}
+    - docker push ${CI_REGISTRY_IMAGE}:{CI_BUILD_NAME}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
 
 clang clang-devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${BUILD_NAME%-*}/{BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/{CI_BUILD_NAME#*-}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 clang-patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${BUILD_NAME%-*}/{BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/{CI_BUILD_NAME#*-}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 pkg-dev:
   stage: build-others
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${BUILD_NAME}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME} Rscript -e 'packageVersion("devtools")'
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} Rscript -e 'packageVersion("devtools")'
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 tidyverse:
   stage: build-others
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${BUILD_NAME} ${BUILD_NAME}
-    - docker run ${CI_REGISTRY_IMAGE}:${BUILD_NAME} Rscript -e 'packageVersion("tidyverse")'
-    - docker push ${CI_REGISTRY_IMAGE}:${BUILD_NAME}
+    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
+    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} Rscript -e 'packageVersion("tidyverse")'
+    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 triggers:
   type: deploy
