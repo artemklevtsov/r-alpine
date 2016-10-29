@@ -32,8 +32,8 @@ RUN apk --no-cache add \
 # Download source code
     && curl -O https://stat.ethz.ch/R/daily/R-devel.tar.gz \
 # Extract source code
-    && tar -xf R-patched.tar.gz \
-    && cd R-patched \
+    && tar -xf R-devel.tar.gz \
+    && cd R-devel \
 # Sect compiler flags
     && CFLAGS="-g -O2 -D_DEFAULT_SOURCE" \
        CXXFLAGS="-g -O2 -D__MUSL__" \
