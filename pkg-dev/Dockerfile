@@ -2,6 +2,14 @@ FROM registry.gitlab.com/artemklevtsov/r-alpine:latest
 
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
-RUN Rscript -e 'install.packages(c("devtools", "roxygen2", "testthat", "RUnit", "lintr", "covr"))'
+ENV R_PKG \
+        devtools \
+        roxygen2 \
+        testthat \
+        RUnit \
+        lintr \
+        covr
+
+RUN Rscript -e 'install.packages(commandArgs(TRUE))' ${R_PKG}
 
 CMD ['R']
