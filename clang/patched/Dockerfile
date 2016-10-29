@@ -35,7 +35,7 @@ RUN apk --no-cache add \
     && curl -O https://stat.ethz.ch/R/daily/R-patched.tar.gz \
 # Extract source code
     && tar -xf R-patched.tar.gz \
-    && test -d R-patched && cd R-patched || R-rc \
+    && test -d R-rc && cd R-rc || cd R-patched \
 # Sect compiler flags
     && CC=clang \
        CXX=clang++ \
