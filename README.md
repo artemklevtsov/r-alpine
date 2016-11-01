@@ -19,7 +19,7 @@ R is a GNU project. The source code for the R software environment is written pr
 | The latest release | `3`, `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/release/Dockerfile) |
 | The latest patched release | `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/patched/Dockerfile) |
 | The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/devel/Dockerfile) |
-| R base image + `devtools`, `rozygen2`, `testthar`, `RUnit`, `covr`, `lintr` packages | `pkg-dev` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/pkg-dev/Dockerfile) |
+| R base image + `devtools`, `rozygen2`, `testthat`, `RUnit`, `covr`, `lintr` packages | `pkg-dev` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/pkg-dev/Dockerfile) |
 | R base image + `tidyverse` + `RSQLite`, `RMySQL`, `RPostgreSQL` packages | `tidyverse` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/tidyverse/Dockerfile) |
 
 ## How to use this image
