@@ -59,6 +59,11 @@ RUN apk --no-cache add \
                    --without-x \
                    --without-recommended-packages \
                    --enable-memory-profiling \
+                   --enable-R-shlib \
+# Build and install R
+    && make \
+    && make install \
+    && cd src/nmath/standalone \
     && make \
     && make install \
 # Remove build dependencies
