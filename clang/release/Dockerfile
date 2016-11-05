@@ -46,7 +46,7 @@ RUN apk --no-cache add \
        CXX=clang++ \
        F77=gfortran \
        OBJC=clang \
-       CFLAGS="-g -O2 -D_DEFAULT_SOURCE" \
+       CFLAGS="-g -O2 -D_DEFAULT_SOURCE -D__USE_MISC" \
        CXXFLAGS="-g -O2 -D__MUSL__" \
 # configure script options
        ./configure --prefix=/usr \
