@@ -14,7 +14,7 @@ before_script:
 gcc-release:
   stage: build-base
   variables:
-    R_VERSION: 3.3.2
+    R_VERSION: 3.3.3
   script:
     - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
@@ -55,7 +55,7 @@ gcc-patched:
 clang-release:
   stage: build-base
   variables:
-    R_VERSION: 3.3.2
+    R_VERSION: 3.3.3
   script:
     - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
