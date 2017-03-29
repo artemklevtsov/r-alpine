@@ -5,7 +5,7 @@ MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 ARG R_VERSION
 
 # R version
-ENV R_VERSION ${R_VERSION:-3.3.2}
+ENV R_VERSION ${R_VERSION:-3.3.3}
 
 # R runtime dependencies
 RUN apk --no-cache add \
