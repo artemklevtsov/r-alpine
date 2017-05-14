@@ -8,15 +8,18 @@ stages:
   - build-others
   - deploy
 
+variables:
+  DOCKER_DRIVER: overlay2
+
 before_script:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
 gcc-release:
   stage: build-base
   variables:
-    R_VERSION: 3.3.3
+    R_VERSION: 3.4.0
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE} -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
@@ -37,7 +40,7 @@ gcc-release:
 gcc-devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
     - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
@@ -46,7 +49,7 @@ gcc-devel:
 gcc-patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
     - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
@@ -55,9 +58,9 @@ gcc-patched:
 clang-release:
   stage: build-base
   variables:
-    R_VERSION: 3.3.3
+    R_VERSION: 3.4.0
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
@@ -70,28 +73,28 @@ clang-release:
 clang-devel:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 clang-patched:
   stage: build-base
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
     - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 pkg-dev:
   stage: build-others
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
     - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} Rscript -e 'packageVersion("devtools")'
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
 tidyverse:
   stage: build-others
   script:
-    - docker build --pull -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
+    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}-t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
     - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} Rscript -e 'packageVersion("tidyverse")'
     - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
 
