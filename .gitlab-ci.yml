@@ -14,94 +14,43 @@ variables:
 before_script:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
-gcc-release:
+r-release:
   stage: build-base
   variables:
     R_VERSION: 3.4.1
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE} -t ${CI_REGISTRY_IMAGE} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
-    - docker run ${CI_REGISTRY_IMAGE} R --version
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} gcc/release
+    - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
+    - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
+    - docker run ${IMAGE_NAME} R --version
     - docker push ${CI_REGISTRY_IMAGE}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
 
-gcc-devel:
-  stage: build-base
-  script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
-
-gcc-patched:
-  stage: build-base
-  script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME#*-}
-
-clang-release:
+r-devel:
   stage: build-base
   variables:
-    R_VERSION: 3.4.1
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} --build-arg R_VERSION=${R_VERSION} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
-    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
-    - docker tag ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION}
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME%-*}-${R_VERSION:0:1}
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} gcc/devel
+    - docker run ${IMAGE_NAME} R --version
+    - docker push ${IMAGE_NAME}
 
-clang-devel:
+r-patched:
   stage: build-base
+  variables:
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-
-clang-patched:
-  stage: build-base
-  script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME%-*}/${CI_BUILD_NAME#*-}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-
-pkg-dev:
-  stage: build-others
-  script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} Rscript -e 'packageVersion("devtools")'
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} gcc/patched
+    - docker run ${IMAGE_NAME} R --version
+    - docker push ${IMAGE_NAME}
 
 tidyverse:
   stage: build-others
+  variables:
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} -t ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} ${CI_BUILD_NAME}
-    - docker run ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME} Rscript -e 'packageVersion("tidyverse")'
-    - docker push ${CI_REGISTRY_IMAGE}:${CI_BUILD_NAME}
-
-triggers:
-  type: deploy
-  image: alpine:latest
-  before_script:
-    - apk --no-cache add curl
-  script:
-    - "curl -X POST -F token=${BENCHR_TOKEN} -F ref=docker https://gitlab.com/api/v3/projects/1284608/trigger/builds"
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} gcc/devel
+    - docker run ${IMAGE_NAME} Rscript -e 'packageVersion("tidyverse")'
+    - docker push ${IMAGE_NAME}
