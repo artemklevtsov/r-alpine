@@ -51,6 +51,6 @@ tidyverse:
   variables:
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} gcc/devel
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} tidyverse
     - docker run ${IMAGE_NAME} Rscript -e 'packageVersion("tidyverse")'
     - docker push ${IMAGE_NAME}
