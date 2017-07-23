@@ -24,7 +24,7 @@ r-release:
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
     - docker run ${IMAGE_NAME} R --version
-    - docker push ${CI_REGISTRY_IMAGE}
+    - docker push ${IMAGE_NAME}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION}
     - docker push ${CI_REGISTRY_IMAGE}:${R_VERSION:0:1}
 
