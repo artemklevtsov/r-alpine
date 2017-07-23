@@ -4,6 +4,7 @@ MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
 RUN apk --no-cache add \
         libxml2-dev \
+        libressl-dev \
         sqlite-dev \
         mariadb-dev \
         postgresql-dev \

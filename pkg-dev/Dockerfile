@@ -10,7 +10,7 @@ ENV R_PKG \
         lintr \
         covr
 
-RUN apk --no-cache add libxml2-dev \
+RUN apk --no-cache add libxml2-dev libressl-dev \
     && Rscript -e 'install.packages(commandArgs(TRUE))' ${R_PKG}
 
 CMD ['R']
