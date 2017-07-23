@@ -10,6 +10,7 @@ ENV R_PKG \
         lintr \
         covr
 
-RUN Rscript -e 'install.packages(commandArgs(TRUE))' ${R_PKG}
+RUN apk --no-cache add libxml2-dev \
+    && Rscript -e 'install.packages(commandArgs(TRUE))' ${R_PKG}
 
 CMD ['R']
