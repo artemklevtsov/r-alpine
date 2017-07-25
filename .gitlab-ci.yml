@@ -28,6 +28,17 @@ r-release:
     - docker push ${IMAGE_NAME}:${R_VERSION}
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
 
+r-pandoc:
+  stage: build-base
+  variables:
+    R_VERSION: 3.4.1
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/r-release:pandoc
+  script:
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} pandoc
+    - docker run ${IMAGE_NAME} R --version
+    - docker run ${IMAGE_NAME} pandoc --version
+    - docker push ${IMAGE_NAME}
+
 r-devel:
   stage: build-base
   variables:
