@@ -6,7 +6,6 @@ services:
 stages:
   - build-base
   - build-others
-  - deploy
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -29,12 +28,14 @@ r-release:
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
 
 r-pandoc:
-  stage: build-base
+  stage: build-others
+  dependencies:
+    - r-release
+  allow_failure: true
   variables:
-    R_VERSION: 3.4.1
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/r-release:pandoc
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} pandoc
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} pandoc
     - docker run ${IMAGE_NAME} R --version
     - docker run ${IMAGE_NAME} pandoc --version
     - docker push ${IMAGE_NAME}
@@ -59,6 +60,8 @@ r-patched:
 
 tidyverse:
   stage: build-others
+  dependencies:
+    - r-release
   variables:
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
