@@ -68,7 +68,7 @@ RUN apk --no-cache add \
     ln -s /usr/lib/R/etc/* /etc/R/ && \
 # Add library directory
     mkdir -p /usr/local/lib/R/site-library && \
-    chgrp users /usr/local/lib/R/site-library \
+    chgrp users /usr/local/lib/R/site-library && \
 # Clean up
     rm -rf /usr/lib/R/library/translations && \
     rm -rf /tmp/*
