@@ -19,7 +19,7 @@ r-release:
     R_VERSION: 3.4.1
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} gcc/release
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} release
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
     - docker run ${IMAGE_NAME} R --version
@@ -45,7 +45,7 @@ r-devel:
   variables:
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} gcc/devel
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} devel
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
@@ -54,7 +54,7 @@ r-patched:
   variables:
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} gcc/patched
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} patched
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
