@@ -30,6 +30,7 @@ RUN apk --no-cache add \
     ln -s /usr/lib/shiny-server/ext/pandoc/pandoc /usr/bin/pandoc && \
     ln -s /usr/lib/shiny-server/ext/pandoc/pandoc-citeproc /usr/bin/pandoc-citeproc && \
     rm -rf /tmp/* && \
+    sed -i s/\-\-login/\-l/ /usr/lib/shiny-server/lib/worker/app-worker.js && \
     mkdir -p /srv/shiny-server && \
     mkdir -p /var/lib/shiny-server && \
     addgroup -S shiny && \
