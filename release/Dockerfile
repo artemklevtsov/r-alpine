@@ -3,9 +3,9 @@ FROM alpine:latest
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
 ARG R_VERSION
-
-# R version
-ENV R_VERSION ${R_VERSION:-3.4.1}
+ENV R_VERSION ${R_VERSION:-3.4.2}
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
 
 # R runtime dependencies
 RUN apk --no-cache add \
@@ -32,7 +32,9 @@ RUN apk --no-cache add \
         perl \
         openjdk8-jre-base \
         pango-dev \
-        cairo-dev && \
+        cairo-dev \
+        tcl-dev \
+        tk-dev && \
     cd /tmp && \
 # Download source code
     curl -O https://cran.r-project.org/src/base/R-${R_VERSION:0:1}/R-${R_VERSION}.tar.gz && \
@@ -40,8 +42,8 @@ RUN apk --no-cache add \
     tar -xf R-${R_VERSION}.tar.gz && \
     cd R-${R_VERSION} && \
 # Sect compiler flags
-    CFLAGS="-g -O2 -D_DEFAULT_SOURCE -D__USE_MISC" \
-    CXXFLAGS="-g -O2 -D__MUSL__" \
+    CFLAGS="-g -O2 -fstack-protector-strong -D_DEFAULT_SOURCE -D__USE_MISC" \
+    CXXFLAGS="-g -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=2 -D__MUSL__" \
 # configure script options
     ./configure --prefix=/usr \
                 --sysconfdir=/etc/R \
@@ -49,11 +51,11 @@ RUN apk --no-cache add \
                 rdocdir=/usr/share/doc/R \
                 rincludedir=/usr/include/R \
                 rsharedir=/usr/share/R \
+                --enable-memory-profiling \
+                --enable-R-shlib \
                 --disable-nls \
                 --without-x \
-                --without-recommended-packages \
-                --enable-memory-profiling \
-                --enable-R-shlib && \
+                --without-recommended-packages && \
 # Build and install R
     make && \
     make install && \

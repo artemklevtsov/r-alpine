@@ -16,7 +16,7 @@ before_script:
 r-release:
   stage: build-base
   variables:
-    R_VERSION: 3.4.1
+    R_VERSION: 3.4.2
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
     - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} release

@@ -2,6 +2,9 @@ FROM alpine:latest
 
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+
 # R runtime dependencies
 RUN apk --no-cache add \
         gcc \
@@ -27,7 +30,9 @@ RUN apk --no-cache add \
         perl \
         openjdk8-jre-base \
         pango-dev \
-        cairo-dev && \
+        cairo-dev \
+        tcl-dev \
+        tk-dev && \
     cd /tmp && \
 # Download source code
     curl -O https://stat.ethz.ch/R/daily/R-patched.tar.gz && \
@@ -35,8 +40,8 @@ RUN apk --no-cache add \
     tar -xf R-patched.tar.gz && \
     test -d R-rc && cd R-rc || cd R-patched && \
 # Sect compiler flags
-    CFLAGS="-g -O2 -D_DEFAULT_SOURCE -D__USE_MISC" \
-    CXXFLAGS="-g -O2 -D__MUSL__" && \
+    CFLAGS="-g -O2 -fstack-protector-strong -D_DEFAULT_SOURCE -D__USE_MISC" \
+    CXXFLAGS="-g -O2 -fstack-protector-strong -D_FORTIFY_SOURCE=2 -D__MUSL__" \
 # configure script options
     ./configure --prefix=/usr \
                 --sysconfdir=/etc/R \
