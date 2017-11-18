@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/artemklevtsov/r-alpine/r-release:latest
+FROM registry.gitlab.com/artemklevtsov/r-alpine/tidyverse:latest
 
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 

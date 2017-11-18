@@ -27,19 +27,6 @@ r-release:
     - docker push ${IMAGE_NAME}:${R_VERSION}
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
 
-r-pandoc:
-  stage: build-others
-  dependencies:
-    - r-release
-  allow_failure: true
-  variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
-  script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} pandoc
-    - docker run ${IMAGE_NAME} R --version
-    - docker run ${IMAGE_NAME} pandoc --version
-    - docker push ${IMAGE_NAME}
-
 r-devel:
   stage: build-base
   variables:
@@ -56,6 +43,19 @@ r-patched:
   script:
     - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} patched
     - docker run ${IMAGE_NAME} R --version
+    - docker push ${IMAGE_NAME}
+
+r-pandoc:
+  stage: build-others
+  dependencies:
+    - r-release
+  allow_failure: true
+  variables:
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
+  script:
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} pandoc
+    - docker run ${IMAGE_NAME} R --version
+    - docker run ${IMAGE_NAME} pandoc --version
     - docker push ${IMAGE_NAME}
 
 tidyverse:
