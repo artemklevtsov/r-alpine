@@ -3,7 +3,7 @@ FROM alpine:latest
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
 ARG R_VERSION
-ENV R_VERSION ${R_VERSION:-3.4.2}
+ENV R_VERSION ${R_VERSION:-3.5.0}
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 
