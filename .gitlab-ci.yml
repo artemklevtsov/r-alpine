@@ -69,10 +69,22 @@ tidyverse:
     - docker run ${IMAGE_NAME} Rscript -e 'packageVersion("tidyverse")'
     - docker push ${IMAGE_NAME}
 
+pkgdev:
+  stage: build-others
+  dependencies:
+    - r-release
+  variables:
+    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
+  script:
+    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} ${CI_BUILD_NAME}
+    - docker run ${IMAGE_NAME} Rscript -e 'packageVersion("devtools")'
+    - docker push ${IMAGE_NAME}
+
 shiny-server:
   stage: build-others
   dependencies:
     - r-release
+  allow_failure: true
   variables:
     IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
