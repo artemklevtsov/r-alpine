@@ -50,7 +50,7 @@ RUN apk --no-cache add \
         wget ${R_DAILY_URL}/R-patched.tar.gz; \
     else \
         wget ${CRAN}/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz; \
-    fi &&   
+    fi && \
     # Extract source code
     tar -xf R-${R_VERSION}.tar.gz && \
     cd R-${R_VERSION} && \

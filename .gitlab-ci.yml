@@ -9,6 +9,7 @@ stages:
 
 variables:
   DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
   IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
 
 before_script:
