@@ -18,8 +18,8 @@ release:
   stage: build-base
   script:
     - apk add jq curl
-    - R_VERSION=$(curl -s "ttps://rversions.r-pkg.org/r-release" | jq -r '.[].version')
-    - docker pull ${IMAGE_NAME}
+    - R_VERSION=$(curl -s "https://rversions.r-pkg.org/r-release" | jq -r '.[].version')
+    - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} .
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
@@ -32,8 +32,8 @@ oldrel:
   stage: build-base
   script:
     - apk add jq curl
-    - R_VERSION=$(curl -s "ttps://rversions.r-pkg.org/r-oldrel" | jq -r '.[].version')
-    - docker pull ${IMAGE_NAME}
+    - R_VERSION=$(curl -s "https://rversions.r-pkg.org/r-oldrel" | jq -r '.[].version')
+    - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
@@ -43,7 +43,7 @@ oldrel:
 devel:
   stage: build-base
   script:
-    - docker pull ${IMAGE_NAME}
+    - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
@@ -51,7 +51,7 @@ devel:
 patched:
   stage: build-base
   script:
-    - docker pull ${IMAGE_NAME}
+    - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
@@ -64,7 +64,7 @@ tidyverse:
     APK_PKG: libxml2-dev libressl-dev sqlite-dev mariadb-dev postgresql-dev unixodbc-dev
     R_PKG: tidyverse RSQLite RMySQL RMariaDB RPostgreSQL odbc dbplyr data.table dtplyr
   script:
-    - docker pull ${IMAGE_NAME}
+    - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
     - docker run ${IMAGE_NAME} Rscript -e "packageVersion('${CI_BUILD_NAME}')"
     - docker push ${IMAGE_NAME}
