@@ -23,8 +23,7 @@ release:
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${R_VERSION}
-                   --file Ddockerfile
+                   --build-arg R_VERSION=${R_VERSION} .
     - docker run ${IMAGE_NAME} R --version
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
@@ -40,8 +39,7 @@ oldrel:
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${R_VERSION}
-                   --file Ddockerfile
+                   --build-arg R_VERSION=${R_VERSION} .
     - docker run ${IMAGE_NAME} R --version
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
@@ -53,8 +51,7 @@ devel:
   stage: build-base
   script:
     - docker build --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${CI_BUILD_NAME}
-                   --file Ddockerfile
+                   --build-arg R_VERSION=${CI_BUILD_NAME} .
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
@@ -62,8 +59,7 @@ patched:
   stage: build-base
   script:
     - docker build --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${CI_BUILD_NAME}
-                   --file Ddockerfile
+                   --build-arg R_VERSION=${CI_BUILD_NAME} .
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
@@ -80,6 +76,6 @@ tidyverse:
                    --tag ${IMAGE_NAME}
                    --build-arg APK_PKG="${APK_PKG}"
                    --build-arg R_PKG="${R_PKG}"
-                   --file Ddockerfile-rpkg
+                   --file Ddockerfile-rpkg .
     - docker run ${IMAGE_NAME} Rscript -e "packageVersion('${CI_BUILD_NAME}')"
     - docker push ${IMAGE_NAME}
