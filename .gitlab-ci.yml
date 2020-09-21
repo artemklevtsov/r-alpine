@@ -1,7 +1,7 @@
 image: docker:stable
 
 services:
-  - docker:dind-stable
+  - docker:stable-dind
 
 stages:
   - build-base
