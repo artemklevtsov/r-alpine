@@ -24,9 +24,9 @@ release:
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
                    --build-arg R_VERSION=${R_VERSION} .
+    - docker run ${IMAGE_NAME} R --version
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
-    - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
     - docker push ${IMAGE_NAME}:${R_VERSION}
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
@@ -41,6 +41,8 @@ oldrel:
                    --tag ${IMAGE_NAME}
                    --build-arg R_VERSION=${R_VERSION} .
     - docker run ${IMAGE_NAME} R --version
+    - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
+    - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
     - docker push ${IMAGE_NAME}
     - docker push ${IMAGE_NAME}:${R_VERSION}
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}

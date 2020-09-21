@@ -72,7 +72,7 @@ RUN apk --no-cache add \
                 --without-x \
                 --without-recommended-packages && \
     # Build and install R
-    make && \
+    make -j $(nproc) && \
     make install && \
     cd src/nmath/standalone && \
     make && \
