@@ -1,14 +1,16 @@
-FROM alpine:edge
+FROM alpine:latest AS builder
 
-RUN apk add --no-cache gmp libffi musl-dev zlib-dev linux-headers ghc cabal && \
+RUN apk add --no-cache wget musl-dev zlib-dev ghc cabal && \
     cabal update && \
-    cabal install hsb2hs && \
-    cabal install pandoc -fstatic -fembed_data_files && \
-    cabal install pandoc-citeproc -fstatic -fembed_data_files
+    cabal install -fstatic -fembed_data_files --constraint="base16-bytestring < 1" -j pandoc && \
+    cabal install -fstatic -fembed_data_files -funicode_collation -j pandoc-citeproc && \
+    strip /root/.cabal/bin/pandoc
 
-FROM registry.gitlab.com/artemklevtsov/r-alpine/r-release:latest
+FROM alpine:latest
 
-COPY --from=0 /root/.cabal/bin/pandoc /usr/bin/pandoc
-COPY --from=0 /root/.cabal/bin/pandoc-citeproc /usr/bin/pandoc-citeproc
+COPY --from=builder /root/.cabal/bin/pandoc /usr/bin/pandoc
+COPY --from=builder /root/.cabal/bin/pandoc-citeproc /usr/bin/pandoc-citeproc
 
-CMD ["R"]
+ENTRYPOINT [" /usr/bin/pandoc"]
+
+CMD ["/bin/ash"]

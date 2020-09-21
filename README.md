@@ -16,11 +16,11 @@ R is a GNU project. The source code for the R software environment is written pr
 
 | Descripiton | Tag | Dockerfile |
 |:----------- |:---:|:----------:|
-| The latest release | `3`, `3.3.1`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/release/Dockerfile) |
-| The latest patched release | `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/patched/Dockerfile) |
-| The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/devel/Dockerfile) |
-| R base image + `devtools`, `rozygen2`, `testthat`, `RUnit`, `covr`, `lintr` packages | `pkg-dev` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/pkg-dev/Dockerfile) |
-| R base image + `tidyverse` + `RSQLite`, `RMySQL`, `RPostgreSQL` packages | `tidyverse` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/tidyverse/Dockerfile) |
+| The latest release | `4`, `4.0.2`, `release`, `latest`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
+| The latest old release | `3`, `3.6.3`, `oldrel`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
+| The latest patched release | `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
+| The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
+| R base image + `tidyverse` + `RSQLite`, `RMySQL`, `RPostgreSQL`, `odbc` packages | `tidyverse` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
 
 ## How to use this image
 
@@ -56,7 +56,7 @@ $ Rscript myscript.R
 Use `r-alpine` as a base for your own Dockerfiles. For instance, something along the lines of the following will compile and run your project:
 
 ```bash
-FROM artemklevtsov/r-alpine:latest
+FROM registry.gitlab.com/artemklevtsov/r-alpine:latest
 RUN apk --no-cache add sqlite-dev
 RUN Rscript -e 'install.packages("RSQLite")'
 COPY . /usr/local/src/myscripts

@@ -1,7 +1,7 @@
-image: docker:latest
+image: docker:stable
 
 services:
-  - docker:dind
+  - docker:dind-stable
 
 stages:
   - build-base
@@ -9,17 +9,18 @@ stages:
 
 variables:
   DOCKER_DRIVER: overlay2
+  IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
 
 before_script:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
-r-release:
+release:
   stage: build-base
-  variables:
-    R_VERSION: 3.5.0
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} release
+    - apk add jq curl
+    - R_VERSION=$(curl -s "ttps://rversions.r-pkg.org/r-release" | jq -r '.[].version')
+    - docker pull ${IMAGE_NAME}
+    - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} --build-arg R_VERSION=${R_VERSION} .
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
     - docker run ${IMAGE_NAME} R --version
@@ -27,67 +28,43 @@ r-release:
     - docker push ${IMAGE_NAME}:${R_VERSION}
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
 
-r-devel:
+oldrel:
   stage: build-base
-  variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} devel
+    - apk add jq curl
+    - R_VERSION=$(curl -s "ttps://rversions.r-pkg.org/r-oldrel" | jq -r '.[].version')
+    - docker pull ${IMAGE_NAME}
+    - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
+    - docker run ${IMAGE_NAME} R --version
+    - docker push ${IMAGE_NAME}
+    - docker push ${IMAGE_NAME}:${R_VERSION}
+    - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
+
+devel:
+  stage: build-base
+  script:
+    - docker pull ${IMAGE_NAME}
+    - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
-r-patched:
+patched:
   stage: build-base
-  variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} patched
+    - docker pull ${IMAGE_NAME}
+    - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
     - docker run ${IMAGE_NAME} R --version
-    - docker push ${IMAGE_NAME}
-
-r-pandoc:
-  stage: build-others
-  dependencies:
-    - r-release
-  allow_failure: true
-  variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
-  script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} pandoc
-    - docker run ${IMAGE_NAME} R --version
-    - docker run ${IMAGE_NAME} pandoc --version
     - docker push ${IMAGE_NAME}
 
 tidyverse:
   stage: build-others
   dependencies:
-    - r-release
+    - release
   variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
+    APK_PKG: libxml2-dev libressl-dev sqlite-dev mariadb-dev postgresql-dev unixodbc-dev
+    R_PKG: tidyverse RSQLite RMySQL RMariaDB RPostgreSQL odbc dbplyr data.table dtplyr
   script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} ${CI_BUILD_NAME}
-    - docker run ${IMAGE_NAME} Rscript -e 'packageVersion("tidyverse")'
-    - docker push ${IMAGE_NAME}
-
-pkgdev:
-  stage: build-others
-  dependencies:
-    - r-release
-  variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
-  script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} ${CI_BUILD_NAME}
-    - docker run ${IMAGE_NAME} Rscript -e 'packageVersion("devtools")'
-    - docker push ${IMAGE_NAME}
-
-shiny-server:
-  stage: build-others
-  dependencies:
-    - r-release
-  allow_failure: true
-  variables:
-    IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_BUILD_NAME}
-  script:
-    - docker build --pull --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} ${CI_BUILD_NAME}
-    - docker run ${IMAGE_NAME} /usr/bin/shiny-server --version
+    - docker pull ${IMAGE_NAME}
+    - docker build --cache-from ${IMAGE_NAME} -t ${IMAGE_NAME} .
+    - docker run ${IMAGE_NAME} Rscript -e "packageVersion('${CI_BUILD_NAME}')"
     - docker push ${IMAGE_NAME}
