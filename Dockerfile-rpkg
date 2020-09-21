@@ -1,0 +1,9 @@
+FROM registry.gitlab.com/artemklevtsov/r-alpine/release:latest
+
+MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
+
+ARG R_PKG
+ARG APK_PKG
+
+RUN apk add ${APK_PKG} && \
+    Rscript -e "install.packages(commandArgs(TRUE))" ${R_PKG}

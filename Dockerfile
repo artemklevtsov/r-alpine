@@ -3,8 +3,6 @@ FROM alpine:latest
 MAINTAINER Artem Klevtsov a.a.klevtsov@gmail.com
 
 ARG R_VERSION
-ARG R_PKG
-ARG APK_PKG
 ENV R_VERSION ${R_VERSION:-4.0.0}
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

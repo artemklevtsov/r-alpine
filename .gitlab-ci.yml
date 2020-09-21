@@ -23,7 +23,8 @@ release:
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${R_VERSION} .
+                   --build-arg R_VERSION=${R_VERSION}
+                   --file Ddockerfile
     - docker run ${IMAGE_NAME} R --version
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
@@ -39,7 +40,8 @@ oldrel:
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${R_VERSION} .
+                   --build-arg R_VERSION=${R_VERSION}
+                   --file Ddockerfile
     - docker run ${IMAGE_NAME} R --version
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
     - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
@@ -50,20 +52,18 @@ oldrel:
 devel:
   stage: build-base
   script:
-    - docker pull ${IMAGE_NAME} || true
-    - docker build --cache-from ${IMAGE_NAME}
-                   --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${CI_BUILD_NAME} .
+    - docker build --tag ${IMAGE_NAME}
+                   --build-arg R_VERSION=${CI_BUILD_NAME}
+                   --file Ddockerfile
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
 patched:
   stage: build-base
   script:
-    - docker pull ${IMAGE_NAME} || true
-    - docker build --cache-from ${IMAGE_NAME}
-                   --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${CI_BUILD_NAME} .
+    - docker build --tag ${IMAGE_NAME}
+                   --build-arg R_VERSION=${CI_BUILD_NAME}
+                   --file Ddockerfile
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
@@ -75,13 +75,11 @@ tidyverse:
     APK_PKG: libxml2-dev libressl-dev sqlite-dev mariadb-dev postgresql-dev unixodbc-dev
     R_PKG: tidyverse RSQLite RMySQL RMariaDB RPostgreSQL odbc dbplyr data.table dtplyr
   script:
-    - apk add jq curl
-    - R_VERSION=$(curl -s "https://rversions.r-pkg.org/r-oldrel" | jq -r '.[].version')
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${R_VERSION}
-                   --build-arg APK_PKG=${APK_PKG}
-                   --build-arg R_PKG=${R_PKG} .
+                   --build-arg APK_PKG="${APK_PKG}"
+                   --build-arg R_PKG="${R_PKG}"
+                   --file Ddockerfile-rpkg
     - docker run ${IMAGE_NAME} Rscript -e "packageVersion('${CI_BUILD_NAME}')"
     - docker push ${IMAGE_NAME}
