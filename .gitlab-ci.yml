@@ -68,8 +68,9 @@ tidyverse:
   dependencies:
     - release
   variables:
-    APK_PKG: libxml2-dev libressl-dev sqlite-dev mariadb-dev postgresql-dev unixodbc-dev
-    R_PKG: tidyverse RSQLite RMySQL RMariaDB RPostgreSQL odbc dbplyr data.table dtplyr
+    APK_PKG: libxml2-dev libressl-dev
+    R_GITHUB_PKG: readxl
+    R_CRAN_PKG: tidyverse data.table dtplyr
   script:
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}

@@ -11,6 +11,7 @@ ENV R_DAILY_URL https://stat.ethz.ch/R/daily
 
     # R runtime dependencies
 RUN apk --no-cache add \
+        linux-headers \
         gcc \
         gfortran \
         g++ \
