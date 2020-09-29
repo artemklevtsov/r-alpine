@@ -76,7 +76,8 @@ tidyverse:
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
                    --build-arg APK_PKG="${APK_PKG}"
-                   --build-arg R_PKG="${R_PKG}"
+                   --build-arg R_CRAN_PKG="${R_CRAN_PKG}"
+                   --build-arg R_GITHUB_PKG="${R_GITHUB_PKG}"
                    --file Dockerfile-rpkg .
     - docker run ${IMAGE_NAME} Rscript -e "packageVersion('${CI_BUILD_NAME}')"
     - docker push ${IMAGE_NAME}
