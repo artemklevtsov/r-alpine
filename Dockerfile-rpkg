@@ -10,7 +10,7 @@ ARG APK_PKG
 
 RUN apk add ${APK_PKG} && \
     Rscript -e "install.packages('remotes')" && \
-    test ! -z "${R_GITHUB_PKG}" && Rscript -e "remotes::install_github(commandArgs(TRUE))" "${R_GITHUB_PKG}" && \
-    test ! -z "${R_GITLBAB_PKG}" && Rscript -e "remotes::install_gitlab(commandArgs(TRUE))" "${R_GITLBAB_PKG}" && \ 
-    test ! -z "${R_BITBUCKET_PKG}" && Rscript -e "remotes::install_bitbucket(commandArgs(TRUE))" "${R_BITBUCKET_PKG}" && \ 
-    test ! -z "${R_CRAN_PKG}" && Rscript -e "remotes::install_cran(commandArgs(TRUE))" "${R_CRAN_PKG}"
+    test ! -z "${R_GITHUB_PKG}" && Rscript -e "remotes::install_github(commandArgs(TRUE))" "${R_GITHUB_PKG}" || true && \
+    test ! -z "${R_GITLBAB_PKG}" && Rscript -e "remotes::install_gitlab(commandArgs(TRUE))" "${R_GITLBAB_PKG}" || true && \ 
+    test ! -z "${R_BITBUCKET_PKG}" && Rscript -e "remotes::install_bitbucket(commandArgs(TRUE))" "${R_BITBUCKET_PKG}" || true && \ 
+    test ! -z "${R_CRAN_PKG}" && Rscript -e "remotes::install_cran(commandArgs(TRUE))" "${R_CRAN_PKG}" || true
