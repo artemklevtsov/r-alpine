@@ -69,7 +69,7 @@ tidyverse:
     - release
   variables:
     APK_PKG: libxml2-dev libressl-dev
-    R_GITHUB_PKG: readxl
+    R_GITHUB_PKG: tidyverse/readxl
     R_CRAN_PKG: tidyverse data.table dtplyr
   script:
     - docker pull ${IMAGE_NAME} || true
