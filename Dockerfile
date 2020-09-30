@@ -43,15 +43,16 @@ RUN apk --no-cache add \
         tk-dev && \
     cd /tmp && \
     # Download source code
-    if [[ "$R_VERSION" == "devel" ]]; then \
-        wget ${R_DAILY_URL}/R-devel.tar.gz; \
-    elif [[ "$R_VERSION" == "patched" ]]; then \
-        wget ${R_DAILY_URL}/R-patched.tar.gz; \
+    if [[ "${R_VERSION}" == "devel" || "${R_VERSION}" == "patched" ]]; then \
+        R_SRC_URL=${R_DAILY_URL}; \
     else \
-        wget ${CRAN}/src/base/R-${R_VERSION%%.*}/R-${R_VERSION}.tar.gz; \
+        R_SRC_URL=${CRAN}/src/base/R-${R_VERSION%%.*}; \
     fi && \
+    wget ${R_SRC_URL}/R-${R_VERSION}.tar.gz && \
     # Extract source code
     tar -xf R-${R_VERSION}.tar.gz && \
+    if [ -d R-beta ]; then mv R-beta R-patched; fi && \
+    if [ -d R-rc ]; then mv R-rc R-patched; fi && \
     cd R-${R_VERSION} && \
     # Set compiler flags
     CFLAGS="-g -O2 -fstack-protector-strong -D_DEFAULT_SOURCE -D__USE_MISC" \
@@ -68,30 +69,38 @@ RUN apk --no-cache add \
                 --enable-java \
                 --disable-nls \
                 --with-blas=openblas \
-                --without-x \
                 --without-recommended-packages && \
     # Build and install R
     make -j $(nproc) && \
     make install && \
     cd src/nmath/standalone && \
-    make && \
+    make -j $(nproc) && \
     make install && \
     rm -f /usr/lib/R/bin/R && \
     ln -s /usr/bin/R /usr/lib/R/bin/R && \
     # Fix library path
-    echo "R_LIBS_SITE=\${R_LIBS_SITE-'/usr/local/lib/R/site-library:/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron && \
+    echo "R_LIBS_SITE=\${R_LIBS_SITE-'/usr/lib/R/library'}" >> /usr/lib/R/etc/Renviron && \
     # Add default CRAN mirror
     echo "options(repos = c(CRAN = '${CRAN}'))" >> /usr/lib/R/etc/Rprofile.site && \
     # Add symlinks for the config ifile in /etc/R
     mkdir -p /etc/R && \
     ln -s /usr/lib/R/etc/* /etc/R/ && \
     # Add library directory
-    mkdir -p /usr/local/lib/R/site-library && \
-    chgrp users /usr/local/lib/R/site-library && \
+    mkdir -p /usr/lib/R/site-library && \
+    chgrp users /usr/lib/R/site-library && \
     # Remove build dependencies
     apk del --purge --rdepends build-deps && \
+    # Strip libs
+    strip -x /usr/lib/R/bin/exec/R && \
+    strip -x /usr/lib/R/lib/* && \
+    find /usr/lib/R -name "*.so" -exec strip -x {} \; && \
     # Clean up
+    rm -rf /R-${R_VERSION}* && \
     rm -rf /usr/lib/R/library/translations && \
+    rm -rf /usr/lib/R/doc && \
+    mkdir -p /usr/lib/R/doc/html && \
+    touch /usr/lib/R/doc/html/R.css && \
+    rm -rf /var/cache/apk/* && \
     rm -rf /tmp/*
 
 CMD ["R"]
