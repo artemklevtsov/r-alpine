@@ -72,9 +72,7 @@ tidyverse:
     R_GITHUB_PKG: tidyverse/readxl
     R_CRAN_PKG: tidyverse data.table dtplyr
   script:
-    - docker pull ${IMAGE_NAME} || true
-    - docker build --cache-from ${IMAGE_NAME}
-                   --tag ${IMAGE_NAME}
+    - docker build --tag ${IMAGE_NAME}
                    --build-arg APK_PKG="${APK_PKG}"
                    --build-arg R_CRAN_PKG="${R_CRAN_PKG}"
                    --build-arg R_GITHUB_PKG="${R_GITHUB_PKG}"
