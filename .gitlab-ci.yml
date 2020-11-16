@@ -15,11 +15,11 @@ variables:
 before_script:
   - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
 
-release:
+.rel:
   stage: build-base
   script:
     - apk add jq curl
-    - R_VERSION=$(curl -s "https://rversions.r-pkg.org/r-release" | jq -r '.[].version')
+    - R_VERSION=$(curl -s "https://rversions.r-pkg.org/r-${CI_BUILD_NAME}" | jq -r '.[].version')
     - docker pull ${IMAGE_NAME} || true
     - docker build --cache-from ${IMAGE_NAME}
                    --tag ${IMAGE_NAME}
@@ -31,23 +31,7 @@ release:
     - docker push ${IMAGE_NAME}:${R_VERSION}
     - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
 
-oldrel:
-  stage: build-base
-  script:
-    - apk add jq curl
-    - R_VERSION=$(curl -s "https://rversions.r-pkg.org/r-oldrel" | jq -r '.[].version')
-    - docker pull ${IMAGE_NAME} || true
-    - docker build --cache-from ${IMAGE_NAME}
-                   --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${R_VERSION} .
-    - docker run ${IMAGE_NAME} R --version
-    - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION}
-    - docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${R_VERSION:0:1}
-    - docker push ${IMAGE_NAME}
-    - docker push ${IMAGE_NAME}:${R_VERSION}
-    - docker push ${IMAGE_NAME}:${R_VERSION:0:1}
-
-devel:
+.dev:
   stage: build-base
   script:
     - docker build --tag ${IMAGE_NAME}
@@ -55,22 +39,10 @@ devel:
     - docker run ${IMAGE_NAME} R --version
     - docker push ${IMAGE_NAME}
 
-patched:
-  stage: build-base
-  script:
-    - docker build --tag ${IMAGE_NAME}
-                   --build-arg R_VERSION=${CI_BUILD_NAME} .
-    - docker run ${IMAGE_NAME} R --version
-    - docker push ${IMAGE_NAME}
-
-tidyverse:
+.pkg:
   stage: build-others
   dependencies:
     - release
-  variables:
-    APK_PKG: libxml2-dev libressl-dev
-    R_GITHUB_PKG: tidyverse/readxl
-    R_CRAN_PKG: tidyverse data.table dtplyr
   script:
     - docker build --tag ${IMAGE_NAME}
                    --build-arg APK_PKG="${APK_PKG}"
@@ -79,3 +51,22 @@ tidyverse:
                    --file Dockerfile-rpkg .
     - docker run ${IMAGE_NAME} Rscript -e "packageVersion('${CI_BUILD_NAME}')"
     - docker push ${IMAGE_NAME}
+
+release:
+  extends: .rel
+
+oldrel:
+  extends: .rel
+
+devel:
+  extends: .dev
+
+patched:
+  extends: .dev
+
+tidyverse:
+  extends: .pkg
+  variables:
+    APK_PKG: libxml2-dev libressl-dev
+    R_GITHUB_PKG: tidyverse/readxl
+    R_CRAN_PKG: tidyverse data.table dtplyr
