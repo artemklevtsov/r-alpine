@@ -1,3 +1,5 @@
+
+
 ## Overview
 
 This repository contains Dockerfiles for different Docker containers of interest to R users.
@@ -20,7 +22,7 @@ R is a GNU project. The source code for the R software environment is written pr
 | The latest old release | `3`, `3.6.3`, `oldrel`| [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
 | The latest patched release | `patched` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
 | The latest development release | `devel` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
-| R base image + `tidyverse` + `RSQLite`, `RMySQL`, `RPostgreSQL`, `odbc` packages | `tidyverse` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
+| R base image with `tidyverse`, `data.table`, `dtplyr`, and `readxl` packages | `tidyverse` | [Dockerfile](https://gitlab.com/artemklevtsov/r-alpine/blob/master/base/Dockerfile) |
 
 ## How to use this image
 
